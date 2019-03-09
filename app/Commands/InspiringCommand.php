@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Invision\Invision;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
@@ -28,6 +29,12 @@ class InspiringCommand extends Command
      */
     public function handle()
     {
+        $test = app(Invision::class);
+
+        $test->init();
+
+        dd(\IPS\Application::applications());
+
         $this->info('Simplicity is the ultimate sophistication.');
     }
 
