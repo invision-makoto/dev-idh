@@ -5,6 +5,7 @@ namespace App\Commands;
 use App\Invision\Invision;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
+use PhpSchool\CliMenu\CliMenu;
 
 class Apps extends Command
 {
@@ -35,17 +36,33 @@ class Apps extends Command
 
 //        dd( \IPS\Application::applications() );
 
+        $itemCallable = function ( CliMenu $menu ) {
+            echo $menu->getSelectedItem()->getText();
+        };
+
         $option = $this->menu( 'Applications', array_keys( \IPS\Application::applications() ) )->open();
         $application = array_values( \IPS\Application::applications() )[ $option ];
 
-        $option = $this->menu( $appName = $ips->lang( '__app_' . $application->directory ), [
-            'Information',
-            'Rebuild',
-            'Build new version',
-            'Build testing environment',
-            'Enable / disable',
-            'Uninstall'
-        ] )->open();
+//        $option = $this->menu( $appName = $ips->lang( '__app_' . $application->directory ), [
+//            'Information',
+//            'Rebuild',
+//            'Build new version',
+//            'Build testing environment',
+//            'Enable / disable',
+//            'Uninstall'
+//        ] )->open();
+
+        $option = $this->menu( $appName = $ips->lang( '__app_' . $application->directory ) )
+            ->addItem( 'Information', $itemCallable, FALSE, FALSE )
+            ->addItem( 'Rebuild', $itemCallable, FALSE, FALSE )
+            ->addItem( 'Build new version', $itemCallable, $this->isInvisionApp($application), $this->isInvisionApp($application) )
+            ->addItem( 'Build testing environment', $itemCallable, $this->isInvisionApp($application), $this->isInvisionApp($application) )
+            ->addItem( 'Enable / disable', $itemCallable, $application->protected, $application->protected )
+            ->addItem( 'Build testing environment', $itemCallable, $this->isInvisionApp($application), $this->isInvisionApp($application) )
+            ->setItemExtra( '[Disabled]' )
+            ->open();
+
+        dd($option);
 
         if ( $option === 0 )
         {
@@ -69,5 +86,16 @@ class Apps extends Command
     public function schedule( Schedule $schedule ): void
     {
         // $schedule->command(static::class)->everyMinute();
+    }
+
+    /**
+     * Checks whether or not the specific app is owned by IPS
+     * @param   \IPS\Application $app
+     * @return bool|void
+     */
+    protected function isInvisionApp( $app )
+    {
+        // We can't just rely on the author since _someone_ forgot to set the author for Blog
+        return in_array( $app->directory, ['core', 'forums', 'downloads', 'blog', 'gallery', 'calendar', 'cms', 'nexus'] );
     }
 }
