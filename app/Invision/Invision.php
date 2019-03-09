@@ -16,4 +16,9 @@ class Invision
     {
         require_once $this->path . '/' . 'init.php';
     }
+
+    public function lang($key)
+    {
+        return \IPS\Lang::load(\IPS\Lang::defaultLanguage())->get($key);
+    }
 }
