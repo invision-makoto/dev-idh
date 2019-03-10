@@ -103,6 +103,19 @@ class Apps extends Command
             $menu->confirm( "Build {$this->app->version} successful" )->display('Ok');
             $menu->close();
         }
+
+        if ( $selection === 'Build new version' )
+        {
+            list( $human, $long ) = $this->getNewVersion();
+
+            $human = $menu->askText()->setPromptText( 'Human version' )->setPlaceholderText( $human )->ask();
+            $long  = $menu->askText()->setPromptText( 'Long version' )->setPlaceholderText( $long )->ask();
+
+            $this->app->assignNewVersion( $long->fetch(), $human->fetch() );
+            $this->app->build();
+
+            $menu->confirm( "Build {$this->app->version} successful" )->display('Ok');
+        }
     }
 
     /**
@@ -139,6 +152,26 @@ class Apps extends Command
 
         \IPS\Data\Store::i()->clearAll();
         \IPS\Data\Cache::i()->clearAll();
+    }
+
+    /**
+     * Calculate version numbers for a new build
+     * @return array
+     */
+    protected function getNewVersion()
+    {
+        // No version set yet?
+        if ( !$this->app->version )
+        {
+            return [ '1.0.0', 10000 ];
+        }
+
+        $exploded = explode( '.', $this->app->version );
+
+        $human = "{$exploded[0]}.{$exploded[1]}." . ( \intval( $exploded[2] ) + 1 );
+        $long  = $this->app->long_version + 1;
+
+        return [$human, $long];
     }
 
     /**
