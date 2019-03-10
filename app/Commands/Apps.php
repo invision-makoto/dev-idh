@@ -59,9 +59,9 @@ class Apps extends Command
             ->addItem( 'Information', [$this, 'handleResponse'], FALSE, FALSE )
             ->addItem( 'Rebuild', [$this, 'handleResponse'], FALSE, FALSE )
             ->addItem( 'Build new version', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
-            ->addItem( 'Build testing environment', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
+//            ->addItem( 'Build testing environment', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
             ->addItem( $this->getToggleOption(), [$this, 'handleResponse'], $this->app->protected, $this->app->protected )
-            ->addItem( 'Build testing environment', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
+            ->addItem( 'Build for release', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
             ->setItemExtra( '[Disabled]' )
             ->open();
 
@@ -115,6 +115,13 @@ class Apps extends Command
             $this->app->build();
 
             $menu->confirm( "Build {$this->app->version} successful" )->display('Ok');
+        }
+
+        if ( $selection === 'Build for release' )
+        {
+            $this->buildForRelease();
+
+            $menu->confirm( "Application {$this->appName} (v{$this->app->version}) built successfully" )->display( 'Ok' );
         }
     }
 
@@ -172,6 +179,26 @@ class Apps extends Command
         $long  = $this->app->long_version + 1;
 
         return [$human, $long];
+    }
+
+    /**
+     * Build an application for release
+     */
+    public function buildForRelease()
+    {
+        $this->app->build();
+
+        $pharDir = rtrim( config('invision.builds_path'), \DIRECTORY_SEPARATOR ) . \DIRECTORY_SEPARATOR . $this->appName;
+
+        if ( !file_exists( $pharDir ) )
+        {
+            mkdir( $pharDir );
+        }
+
+        $pharPath = $pharDir . \DIRECTORY_SEPARATOR . $this->app->directory . '.tar';
+
+        $download = new \PharData( $pharPath, 0, $this->app->directory . ".tar", \Phar::TAR );
+        $download->buildFromIterator( new \IPS\Application\BuilderIterator( $this->app ) );
     }
 
     /**

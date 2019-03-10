@@ -14,4 +14,15 @@ return [
 
     'path' => '../Inivision Power Suite/ips4',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Builds directory
+    |--------------------------------------------------------------------------
+    |
+    | This is the directory builds from the "Build for release" command
+    | are stored in.
+    |
+    */
+    'builds_path' => './builds/'
+
 ];
