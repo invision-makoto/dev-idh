@@ -6,6 +6,7 @@ use App\Invision\Invision;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use PhpSchool\CliMenu\CliMenu;
+use Symfony\Component\Filesystem\Filesystem;
 
 class Apps extends Command
 {
@@ -260,6 +261,17 @@ class Apps extends Command
             $devPath = $buildDir . \DIRECTORY_SEPARATOR . 'Development Resources.zip';
             $this->recursiveZip( $appPath . \DIRECTORY_SEPARATOR . 'dev', $devPath );
         } );
+
+        // Copy screenshots, if we have them
+        $fs = new Filesystem();
+        $screenshotsPath = $appPath . \DIRECTORY_SEPARATOR . 'screenshots';
+
+        if ( $fs->exists( $screenshotsPath ) )
+        {
+            $this->task( 'Copying screenshots', function () use ( $fs, $screenshotsPath, $buildDir ) {
+                $fs->mirror( $screenshotsPath, $buildDir . \DIRECTORY_SEPARATOR . 'screenshots' );
+            } );
+        }
     }
 
     /**
