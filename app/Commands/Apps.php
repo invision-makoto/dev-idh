@@ -39,6 +39,12 @@ class Apps extends Command
     protected $menu;
 
     /**
+     * Valid files to include in the documentation archive
+     * @var array
+     */
+    protected static $docFiles = [ 'README.md', 'README.txt', 'README.htm', 'README.html', 'LICENSE', 'LICENSE.txt' ];
+
+    /**
      * Execute the console command.
      *
      * @return mixed
@@ -119,9 +125,11 @@ class Apps extends Command
 
         if ( $selection === 'Build for release' )
         {
+            $menu->close();
+
             $this->buildForRelease();
 
-            $menu->confirm( "Application {$this->appName} (v{$this->app->version}) built successfully" )->display( 'Ok' );
+//            $menu->confirm( "Application {$this->appName} (v{$this->app->version}) built successfully" )->display( 'Ok' );
         }
     }
 
@@ -186,19 +194,61 @@ class Apps extends Command
      */
     public function buildForRelease()
     {
-        $this->app->build();
+        $this->task( 'Rebuilding application', function () {
+            $this->app->build();
+        } );
 
-        $pharDir = rtrim( config('invision.builds_path'), \DIRECTORY_SEPARATOR ) . \DIRECTORY_SEPARATOR . $this->appName;
-
-        if ( !file_exists( $pharDir ) )
+        $buildDir = rtrim( config('invision.builds_path'), \DIRECTORY_SEPARATOR ) . \DIRECTORY_SEPARATOR . $this->appName . \DIRECTORY_SEPARATOR . $this->app->long_version;
+        if ( !file_exists( $buildDir ) )
         {
-            mkdir( $pharDir );
+            $this->task( "Creating new build directory {$buildDir}", function () use ( $buildDir ) {
+                mkdir( $buildDir, 0777, TRUE );
+            } );
         }
 
-        $pharPath = $pharDir . \DIRECTORY_SEPARATOR . $this->app->directory . '.tar';
+        $pharPath = $buildDir . \DIRECTORY_SEPARATOR . $this->app->directory . '.tar';
+        if ( file_exists( $pharPath ) )
+        {
+            $this->task( 'Removing previous build', function () use ( $pharPath ) {
+                unlink( $pharPath );
+            } );
+        }
+        $this->task( 'Building application PHAR archive', function () use ( $pharPath ) {
+            $download = new \PharData( $pharPath, 0, $this->app->directory . ".tar", \Phar::TAR );
+            $download->buildFromIterator( new \IPS\Application\BuilderIterator( $this->app ) );
+        } );
 
-        $download = new \PharData( $pharPath, 0, $this->app->directory . ".tar", \Phar::TAR );
-        $download->buildFromIterator( new \IPS\Application\BuilderIterator( $this->app ) );
+        // Any documentation / license files?
+        $appPath = config( 'invision.path' ) . \DIRECTORY_SEPARATOR . 'applications' . \DIRECTORY_SEPARATOR . $this->app->directory;
+
+        $hasDocs = FALSE;
+        foreach ( static::$docFiles as $filename )
+        {
+            if ( file_exists( $appPath . \DIRECTORY_SEPARATOR . $filename ) )
+            {
+                $hasDocs = TRUE;
+                break;
+            }
+        }
+
+        if ( $hasDocs )
+        {
+            $this->task( 'Archiving documentation and license files', function () use ( $buildDir, $appPath ) {
+                $docPath = $buildDir . \DIRECTORY_SEPARATOR . 'Documentation and License.zip';
+                $zip = new \ZipArchive();
+                $zip->open( $docPath, \ZipArchive::OVERWRITE );
+
+                foreach ( static::$docFiles as $filename )
+                {
+                    if ( file_exists( $appPath . \DIRECTORY_SEPARATOR . $filename ) )
+                    {
+                        $zip->addFile( $appPath . \DIRECTORY_SEPARATOR . $filename, $filename );
+                    }
+                }
+
+                $zip->close();
+            } );
+        }
     }
 
     /**
