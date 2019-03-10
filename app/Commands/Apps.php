@@ -85,6 +85,11 @@ class Apps extends Command
         // $schedule->command(static::class)->everyMinute();
     }
 
+    /**
+     * CUI action callback method
+     * @param CliMenu $menu
+     * @throws \PhpSchool\CliMenu\Exception\InvalidTerminalException
+     */
     public function handleResponse( CliMenu $menu )
     {
         $selection = $menu->getSelectedItem()->getText();
@@ -267,6 +272,10 @@ class Apps extends Command
         return in_array( $this->app->directory, ['core', 'forums', 'downloads', 'blog', 'gallery', 'calendar', 'cms', 'nexus'] );
     }
 
+    /**
+     * Show whether the application is enabled or disabled
+     * @return string
+     */
     protected function getToggleOption()
     {
         return $this->app->enabled ? 'Disable' : 'Enable';
