@@ -233,7 +233,7 @@ class Apps extends Command
 
         if ( $hasDocs )
         {
-            $this->task( 'Archiving documentation and license files', function () use ( $buildDir, $appPath ) {
+            $this->task( 'Compiling documentation and license files', function () use ( $buildDir, $appPath ) {
                 $docPath = $buildDir . \DIRECTORY_SEPARATOR . 'Documentation and License.zip';
                 $zip = new \ZipArchive();
                 $zip->open( $docPath, \ZipArchive::OVERWRITE );
@@ -249,6 +249,12 @@ class Apps extends Command
                 $zip->close();
             } );
         }
+
+        // Now bundle up our development resources
+        $this->task( 'Compiling development resources', function () use ( $buildDir, $appPath ) {
+            $devPath = $buildDir . \DIRECTORY_SEPARATOR . 'Development Resources.zip';
+            $this->recursiveZip( $appPath . \DIRECTORY_SEPARATOR . 'dev', $devPath );
+        } );
     }
 
     /**
@@ -264,5 +270,61 @@ class Apps extends Command
     protected function getToggleOption()
     {
         return $this->app->enabled ? 'Disable' : 'Enable';
+    }
+
+    /**
+     * Recursively zip a specified directory
+     * @example https://stackoverflow.com/questions/1334613/how-to-recursively-zip-a-directory-in-php
+     * @param $source
+     * @param $destination
+     * @return bool
+     */
+    protected function recursiveZip( $source, $destination )
+    {
+        $zip = new \ZipArchive();
+        $zip->open( $destination, \ZipArchive::CREATE | \ZipArchive::OVERWRITE );
+
+        $source = \str_replace( '\\', '/', \realpath( $source ) );
+
+        if ( \is_dir( $source ) === TRUE )
+        {
+            $files = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator( $source ), \RecursiveIteratorIterator::SELF_FIRST
+            );
+
+            foreach ( $files as $file )
+            {
+                $file = \str_replace( '\\', '/', $file );
+
+                // Ignore "." and ".." folders
+                if ( in_array( \substr( $file, \strrpos( $file, '/' ) + 1 ), [ '.', '..' ] ) )
+                {
+                    continue;
+                }
+
+                $file = \realpath( $file );
+
+                if ( \is_dir( $file ) === TRUE )
+                {
+                    $zip->addEmptyDir( \str_replace( $source . '/', '', $file . '/' ) );
+                }
+                else
+                {
+                    if ( is_file( $file ) === TRUE )
+                    {
+                        $zip->addFromString( \str_replace( $source . '/', '', $file ), \file_get_contents( $file ) );
+                    }
+                }
+            }
+        }
+        else
+        {
+            if ( \is_file( $source ) === TRUE )
+            {
+                $zip->addFromString( \basename( $source ), \file_get_contents( $source ) );
+            }
+        }
+
+        return $zip->close();
     }
 }
