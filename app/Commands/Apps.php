@@ -236,7 +236,7 @@ class Apps extends Command
             $this->task( 'Compiling documentation and license files', function () use ( $buildDir, $appPath ) {
                 $docPath = $buildDir . \DIRECTORY_SEPARATOR . 'Documentation and License.zip';
                 $zip = new \ZipArchive();
-                $zip->open( $docPath, \ZipArchive::OVERWRITE );
+                $zip->open( $docPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE );
 
                 foreach ( static::$docFiles as $filename )
                 {
