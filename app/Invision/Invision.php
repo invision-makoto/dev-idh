@@ -10,6 +10,7 @@ class Invision
     public function __construct($path)
     {
         $this->path = $path;
+        putenv( 'IDH_COMMAND=ENABLED' );
     }
 
     public function init()

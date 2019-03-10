@@ -96,6 +96,13 @@ class Apps extends Command
             $menu->confirm( "Application {$selection}d" )->display('Ok');
             $menu->close();
         }
+
+        if ( $selection === 'Rebuild' )
+        {
+            $this->app->build();
+            $menu->confirm( "Build {$this->app->version} successful" )->display('Ok');
+            $menu->close();
+        }
     }
 
     /**
