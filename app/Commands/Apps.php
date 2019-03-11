@@ -57,22 +57,18 @@ class Apps extends Command
         $ips = app( Invision::class );
         $ips->init();
 
-//        dd( \IPS\Application::applications() );
-
         $option = $this->menu( 'Applications', array_keys( \IPS\Application::applications() ) )->open();
         $this->app = array_values( \IPS\Application::applications() )[ $option ];
 
         $this->menu( $this->appName = $ips->lang( '__app_' . $this->app->directory ) )
             ->addItem( 'Information', [$this, 'handleResponse'], FALSE, FALSE )
+            ->addItem( 'Build for release', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
             ->addItem( 'Rebuild', [$this, 'handleResponse'], FALSE, FALSE )
             ->addItem( 'Build new version', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
 //            ->addItem( 'Build testing environment', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
             ->addItem( $this->getToggleOption(), [$this, 'handleResponse'], $this->app->protected, $this->app->protected )
-            ->addItem( 'Build for release', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
             ->setItemExtra( '[Disabled]' )
             ->open();
-
-        //dd($apps);
     }
 
     /**
@@ -134,8 +130,6 @@ class Apps extends Command
             $menu->close();
 
             $this->buildForRelease();
-
-//            $menu->confirm( "Application {$this->appName} (v{$this->app->version}) built successfully" )->display( 'Ok' );
         }
     }
 
