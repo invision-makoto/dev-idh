@@ -55,6 +55,7 @@ Even better, it can parse database schema files and automatically assign them as
 There are various additional features planned for this application, but I do not have any timelines or guarantees on when they will be implemented.
 
 Some of these features include:
+* Plugins CUI management interface
 * Re-introduction Power Tools' "tinker" command
 * Acceptance test helpers
 * Class generators
