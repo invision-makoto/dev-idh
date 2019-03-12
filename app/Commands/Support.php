@@ -86,7 +86,7 @@ class Support extends Command
      * @param CliMenu $menu
      * @throws \PhpSchool\CliMenu\Exception\InvalidTerminalException
      */
-    public function runMd5Checks( CliMenu $menu ): void
+    protected function runMd5Checks( CliMenu $menu ): void
     {
         $menu->close();
 
