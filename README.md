@@ -1,37 +1,61 @@
-<p align="center">
-    <img title="Laravel Zero" height="100" src="https://raw.githubusercontent.com/laravel-zero/docs/master/images/logo/laravel-zero-readme.png" />
-</p>
+# Invision Development Helper (IDH)
 
-<p align="center">
-  <a href="https://travis-ci.org/laravel-zero/framework"><img src="https://img.shields.io/travis/laravel-zero/framework/stable.svg" alt="Build Status"></img></a>
-  <a href="https://scrutinizer-ci.com/g/laravel-zero/framework"><img src="https://img.shields.io/scrutinizer/g/laravel-zero/framework.svg" alt="Quality Score"></img></a>
-  <a href="https://packagist.org/packages/laravel-zero/framework"><img src="https://poser.pugx.org/laravel-zero/framework/d/total.svg" alt="Total Downloads"></a>
-  <a href="https://packagist.org/packages/laravel-zero/framework"><img src="https://poser.pugx.org/laravel-zero/framework/v/stable.svg" alt="Latest Stable Version"></a>
-  <a href="https://packagist.org/packages/laravel-zero/framework"><img src="https://poser.pugx.org/laravel-zero/framework/license.svg" alt="License"></a>
-</p>
+Invision Development Helper is a command line utility designed to aid third-party IPS developers in their everyday workflow.
 
-<h4> <center>This is a <bold>community project</bold> and not an official Laravel one </center></h4>
+It is a direct continuation of the previous Power Tools command line script, and is still in its early alpha stages with limited functionality.
 
-Laravel Zero was created by, and is maintained by [Nuno Maduro](https://github.com/nunomaduro), and is a micro-framework that provides an elegant starting point for your console application. It is an **unofficial** and customized version of Laravel optimized for building command-line applications.
+**IMPORTANT: THIS TOOL IS FOR USE ON LOCAL DEVELOPMENT ENVIRONMENTS ONLY. UNDER NO CIRCUMSTANCE SHOULD ANY OF THE PROVIDED TOOLS BE USED ON A PRODUCTION SERVER.**
 
-- Built on top of the [Laravel](https://laravel.com) components.
-- Optional installation of Laravel [Eloquent](https://laravel-zero.com/docs/database/), Laravel [Logging](https://laravel-zero.com/docs/logging/) and many others.
-- Supports interactive [menus](https://laravel-zero.com/docs/build-interactive-menus/) and [desktop notifications](https://laravel-zero.com/docs/send-desktop-notifications/) on Linux, Windows & MacOS.
-- Ships with a [Scheduler](https://laravel-zero.com/docs/task-scheduling/) and  a [Standalone Compiler](https://laravel-zero.com/docs/build-a-standalone-application/).
-- Integration with [Collision](https://github.com/nunomaduro/collision) - Beautiful error reporting
+## Installation
+First, make sure you have installed the included **Invision Development Helper.xml** plugin onto your development site.
 
-------
+If you are on Linux, you can copy the **idh** executable to /usr/local/bin for convenience.
 
-## Documentation
+Otherwise, just extract the included **idh** file to the directory of your IPS installation and run it from there.
 
-For full documentation, visit [laravel-zero.com](http://laravel-zero.com/).
+If the script is not being run while you are currently in your IPS installation root, you must set the path to your IPS installation in the ```IDH_PATH``` environment variable.
 
-## Support the development
-**Do you like this project? Support it by donating**
+## Features
+As noted above, this is an early alpha project and has limited functionality.
 
-- PayPal: [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66BYDWAT92N6L)
-- Patreon: [Donate](https://www.patreon.com/nunomaduro)
+### Application management
+IDH includes a dedicated CUI allowing you to manage various aspects of your application from the commandline.
 
-## License
+![](https://i.imgur.com/nOIvF9b.png)
 
-Laravel Zero is an open-source software licensed under the [MIT license](https://github.com/laravel-zero/laravel-zero/blob/stable/LICENSE.md).
+From here, you can
+* View application information
+* Build your application for release (more information below)
+* Rebuild the application
+* Build a new application version
+* Enable/disable problem applications remotely
+
+![](https://i.imgur.com/w9nmxjV.png)
+
+#### Build for release
+The "build for release" function does all of the following things for you at once:
+* Creates a new builds directory for you, which is organized by your applications long_version
+* Rebuilds the application
+* Builds and copies the applications PHAR archive, making sure to exclude tests, screenshots, and other undesirable folders
+* Compiles and zips any documentation and license files (README.md, README.html, LICENSE.txt, ...)
+* Compiles all development resources
+* Copies over screenshotos in the screenshots folder (if available)
+
+This way, everything is bundled up and ready to be directly uploaded to the marketplace. No having to manually copy or move things around, everything is sorted and compiled for you in an instant.
+
+### Proxy classes
+
+Just as the old Power Tools application did, IDH provides the ability to generate "proxy" classes used to help your IDE properly resolve IPS' monkey-patched classes.
+
+Even better, it can parse database schema files and automatically assign them as properties to their associated classes!
+
+
+## Future features
+
+There are various additional features planned for this application, but I do not have any timelines or guarantees on when they will be implemented.
+
+Some of these features include:
+* Re-introduction Power Tools' "tinker" command
+* Acceptance test helpers
+* Class generators
+* Setting page generators
