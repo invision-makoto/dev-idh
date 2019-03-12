@@ -21,7 +21,6 @@
         "dariuszp/cli-progress-bar": "^1.0",
         "illuminate/log": "5.7.*",
         "laravel-zero/framework": "5.7.*",
-        "nunomaduro/laravel-console-dusk": "^1.2",
         "symfony/filesystem": "^4.2",
         "ext-json": "*"
     },
