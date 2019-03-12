@@ -59,7 +59,7 @@ class Support extends Command
      * @param CliMenu $menu
      * @throws \PhpSchool\CliMenu\Exception\InvalidTerminalException
      */
-    protected function clearCache( CliMenu $menu ): void
+    public function clearCache( CliMenu $menu ): void
     {
         $menu->close();
 
@@ -86,7 +86,7 @@ class Support extends Command
      * @param CliMenu $menu
      * @throws \PhpSchool\CliMenu\Exception\InvalidTerminalException
      */
-    protected function runMd5Checks( CliMenu $menu ): void
+    public function runMd5Checks( CliMenu $menu ): void
     {
         $menu->close();
 
