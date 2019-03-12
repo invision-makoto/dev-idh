@@ -23,6 +23,17 @@ return [
     | are stored in.
     |
     */
-    'builds_path' => './builds/'
+    'builds_path' => './builds/',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Builds directory
+    |--------------------------------------------------------------------------
+    |
+    | This is the directory builds from the "Build for release" command
+    | are stored in.
+    |
+    */
+    'backups_path' => './backups/'
 
 ];

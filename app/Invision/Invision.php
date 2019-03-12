@@ -75,4 +75,16 @@ class Invision
     {
         \IPS\Theme::deleteCompiledCss();
     }
+
+    /**
+     * Load and return IPS configuration variables
+     * @return array
+     */
+    public function getConfig()
+    {
+        require $this->path . '/' . 'conf_global.php';
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return $INFO;
+    }
 }

@@ -40,6 +40,7 @@ class Support extends Command
         $this->menu( 'Support tools' )
              ->addItem( 'Clear cache', [ $this, 'clearCache' ], FALSE, FALSE )
              ->addItem( 'Run MD5 checks', [ $this, 'runMd5Checks' ], FALSE, FALSE )
+             ->addItem( 'Dump MySQL database', [ $this, 'sqlDump' ], FALSE, FALSE )
              ->open();
     }
 
@@ -109,5 +110,33 @@ class Support extends Command
         }
 
         $this->info( 'MD5 checks completed without error!' );
+    }
+
+    /**
+     * MySQL dump the IPS database
+     * @param CliMenu $menu
+     * @throws \PhpSchool\CliMenu\Exception\InvalidTerminalException
+     */
+    public function sqlDump( CliMenu $menu ): void
+    {
+        $menu->close();
+
+        $conf = $this->ips->getConfig();
+        $backupsPath = config( 'invision.backups_path' ) . \DIRECTORY_SEPARATOR . time();
+
+        $this->task( 'Creating backups directory', function () use ( $backupsPath ) {
+            mkdir( $backupsPath, 0777, TRUE );
+        } );
+
+        $this->task( 'Running MySQL dump', function () use ( $conf, $backupsPath ) {
+            \Spatie\DbDumper\Databases\MySql::create()
+                                            ->setHost( $conf['sql_host'] )
+                                            ->setDbName( $conf['sql_database'] )
+                                            ->setUserName( $conf['sql_user'] )
+                                            ->setPassword( $conf['sql_pass'] )
+                                            ->setPort( $conf['sql_port'] )
+                                            ->useExtendedInserts()
+                                            ->dumpToFile( $backupsPath . \DIRECTORY_SEPARATOR . $conf['sql_database'] . '.sql' );
+        } );
     }
 }
