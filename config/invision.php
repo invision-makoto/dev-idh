@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'path' => '../Inivision Power Suite/ips4',
+    'path' => env( 'IDH_PATH', './' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -23,7 +23,7 @@ return [
     | are stored in.
     |
     */
-    'builds_path' => './builds/',
+    'builds_path' => env( 'IDH_BUILDS_PATH', './builds/' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -34,6 +34,6 @@ return [
     | are stored in.
     |
     */
-    'backups_path' => './backups/'
+    'backups_path' => env( 'IDH_BACKUPS_PATH', './backups/' )
 
 ];
