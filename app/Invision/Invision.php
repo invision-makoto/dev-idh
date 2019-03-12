@@ -6,32 +6,21 @@ namespace App\Invision;
 class Invision
 {
     /**
-     * Singleton instance
-     * @var Invision
-     */
-    private static $instance;
-
-    /**
      * Path to the IPS installation
      * @var string
      */
     protected $path;
 
+    /**
+     * Invision constructor.
+     *
+     * @param $path
+     */
     public function __construct( $path )
     {
         $this->path = $path;
         putenv( 'IDH_COMMAND=ENABLED' );
         require_once $this->path . '/' . 'init.php';
-    }
-
-    /**
-     * Singleton initializer
-     * @param $path
-     * @return Invision
-     */
-    public static function i( $path ): Invision
-    {
-        return static::$instance ?: new static( $path );
     }
 
     /**
