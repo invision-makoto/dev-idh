@@ -86,7 +86,7 @@ class Support extends Command
      * @param CliMenu $menu
      * @throws \PhpSchool\CliMenu\Exception\InvalidTerminalException
      */
-    public function runMd5Checks( CliMenu $menu )
+    public function runMd5Checks( CliMenu $menu ): void
     {
         $menu->close();
 
@@ -96,11 +96,18 @@ class Support extends Command
         } );
         $this->line('');
 
-        $this->warn( 'MD5 checks failed on the following files' );
-        $this->info( '----------------------------------------' );
-        foreach ( $modified as $file )
+        if ( $modified )
         {
-            $this->warn( "Modified: {$file}" );
+            $this->warn( 'MD5 checks failed on the following files' );
+            $this->info( '----------------------------------------' );
+            foreach ( $modified as $file )
+            {
+                $this->warn( "Modified: {$file}" );
+            }
+
+            return;
         }
+
+        $this->info( 'MD5 checks completed without error!' );
     }
 }
