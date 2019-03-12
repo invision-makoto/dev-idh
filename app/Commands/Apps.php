@@ -55,7 +55,6 @@ class Apps extends Command
     {
         /** @var \App\Invision\Invision $ips */
         $ips = app( Invision::class );
-        $ips->init();
 
         $option = $this->menu( 'Applications', array_keys( \IPS\Application::applications() ) )->open();
         $this->app = array_values( \IPS\Application::applications() )[ $option ];
