@@ -7,7 +7,6 @@ use Dariuszp\CliProgressBar;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use Symfony\Component\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Log;
 
 class Proxy extends Command
 {
@@ -73,7 +72,6 @@ class Proxy extends Command
             $scriptsIterator = new \RegexIterator( $iterator, '/^.+\.php$/i', \RecursiveRegexIterator::GET_MATCH );
             foreach ( $scriptsIterator as $file )
             {
-//                Log::debug( "Script: {$file[0]}" );
                 $scriptsToParse[] = $file[0];
             }
         } );
@@ -82,18 +80,14 @@ class Proxy extends Command
             $schemaIterator = new \RegexIterator( $iterator, '/^.*schema\.json$/i', \RecursiveRegexIterator::GET_MATCH );
             foreach ( $schemaIterator as $file )
             {
-//                Log::debug( "Schema: {$file[0]}" );
                 $schemasToParse[] = $file[0];
             }
         } );
 
         $count = count( $scriptsToParse ) + count( $schemasToParse );
-//        Log::info( count( $scriptsToParse ) . ' script files matches' );
-//        Log::info( count( $schemasToParse ) . ' schema files matches' );
 
         // Start our progress bar and disable the console cursor
         $this->getOutput()->write("\033[?25l", true);
-//        $progress = new ProgressBar($output, $count);
         $bar = new CliProgressBar( $count );
         $bar->display();
         $bar->setColorToRed();
@@ -217,8 +211,6 @@ class Proxy extends Command
             {
                 if ( isset( $this->_schemas[ $table ] ) )
                 {
-//                    Log::info( "Table matched: {$table}" );
-
                     $columns = $this->_schemas[ $table ]->getColumns();
                     $content .= "/**\n";
                     foreach ( $columns as $column )
@@ -279,7 +271,6 @@ class Proxy extends Command
         $json = json_decode( file_get_contents( $filePath ) );
         if ( empty( $json ) )
         {
-//            Log::warning( "Unable to parse json schema: {$filePath}" );
             return FALSE;
         }
 
