@@ -18,6 +18,11 @@ If the script is not being run while you are currently in your IPS installation 
 ## Features
 As noted above, this is an early alpha project and has limited functionality.
 
+### Interactive console
+![](https://i.imgur.com/TzhVVOc.gif)
+
+IDH integrates IPS with [PsySh](https://psysh.org) via the console command, allowing you to quickly test and run IPS code directly from the command line.
+
 ### Application management
 IDH includes a dedicated CUI allowing you to manage various aspects of your application from the commandline.
 
@@ -49,14 +54,19 @@ Just as the old Power Tools application did, IDH provides the ability to generat
 
 Even better, it can parse database schema files and automatically assign them as properties to their associated classes!
 
+### Support
+* Clear IPS cache and data store remotely
+* Remotely backup/dump your development servers database
+* Run MD5 checks to find modified core files
+
+![](https://i.imgur.com/O33nI8S.png)
+
 
 ## Future features
 
 There are various additional features planned for this application, but I do not have any timelines or guarantees on when they will be implemented.
 
 Some of these features include:
-* Plugins CUI management interface
-* Re-introduction Power Tools' "tinker" command
 * Acceptance test helpers
 * Class generators
 * Setting page generators
