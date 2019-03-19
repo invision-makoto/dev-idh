@@ -23,6 +23,7 @@
         "hoa/console": "^3.17",
         "laravel-zero/framework": "5.7.*",
         "psy/psysh": "@stable",
+        "sabre/xml": "^2.1",
         "spatie/db-dumper": "^2.13",
         "symfony/filesystem": "^4.2"
     },

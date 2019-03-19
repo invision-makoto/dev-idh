@@ -4,6 +4,7 @@ namespace App\Commands;
 
 use App\Invision\Invision;
 use Illuminate\Console\Scheduling\Schedule;
+use IPS\Xml\SimpleXML;
 use LaravelZero\Framework\Commands\Command;
 use PhpSchool\CliMenu\CliMenu;
 use Symfony\Component\Filesystem\Filesystem;
@@ -277,7 +278,6 @@ class Apps extends Command
     public function rebuildDevResources( CliMenu $menu )
     {
         $menu->close();
-        $continue = TRUE;
 
         $appPath = join( \DIRECTORY_SEPARATOR, [ config( 'invision.path' ), 'applications', $this->app->directory ] );
         $devPath = join( \DIRECTORY_SEPARATOR, [ $appPath, 'dev' ] );
@@ -308,6 +308,188 @@ class Apps extends Command
                     } );
                 }
             }
+            else
+            {
+                $this->info( 'Aborting' );
+                exit;
+            }
+        }
+
+        /**
+         * INIT
+         */
+        $this->task( 'Initializing development directories', function () use ( $appPath, $devPath, $fs ) {
+            if ( $fs->exists( $devPath ) )
+            {
+                $fs->remove( $devPath );
+            }
+
+            $fs->mkdir( $devPath );
+            $fs->mkdir( join( \DIRECTORY_SEPARATOR, [ $devPath, 'css' ] ) );
+            $fs->mkdir( join( \DIRECTORY_SEPARATOR, [ $devPath, 'email' ] ) );
+            $fs->mkdir( join( \DIRECTORY_SEPARATOR, [ $devPath, 'html' ] ) );
+            $fs->mkdir( join( \DIRECTORY_SEPARATOR, [ $devPath, 'js' ] ) );
+            $fs->mkdir( join( \DIRECTORY_SEPARATOR, [ $devPath, 'resources' ] ) );
+
+            $fs->touch( join( \DIRECTORY_SEPARATOR, [ $devPath, 'index.html' ] ) );
+            $fs->touch( join( \DIRECTORY_SEPARATOR, [ $devPath, 'css', 'index.html' ] ) );
+            $fs->touch( join( \DIRECTORY_SEPARATOR, [ $devPath, 'email', 'index.html' ] ) );
+            $fs->touch( join( \DIRECTORY_SEPARATOR, [ $devPath, 'html', 'index.html' ] ) );
+            $fs->touch( join( \DIRECTORY_SEPARATOR, [ $devPath, 'js', 'index.html' ] ) );
+            $fs->touch( join( \DIRECTORY_SEPARATOR, [ $devPath, 'resources', 'index.html' ] ) );
+
+            $fs->touch( join( \DIRECTORY_SEPARATOR, [ $devPath, 'lang.php' ] ) );
+            $fs->touch( join( \DIRECTORY_SEPARATOR, [ $devPath, 'jslang.php' ] ) );
+        } );
+
+        /**
+         * REBUILD LANGUAGE STRINGS
+         */
+        $lang = [];
+        $jsLang = [];
+
+        if ( $fs->exists( $langXmlPath = join( \DIRECTORY_SEPARATOR, [$appPath, 'data', 'lang.xml'] ) ) )
+        {
+            $this->task( 'Rebuilding language files', function () use ( $appPath, $devPath, $langXmlPath, $fs, &$lang, &$jsLang ) {
+                $service = new \Sabre\Xml\Service();
+                $service = $service->parse( file_get_contents( $langXmlPath ) );
+
+                foreach ( $service[0]['value'] as $xml )
+                {
+                    if ( $xml['attributes']['js'] == 1 )
+                    {
+                        $jsLang[ $xml['attributes']['key'] ] = $xml['value'];
+                        continue;
+                    }
+
+                    $lang[ $xml['attributes']['key'] ] = $xml['value'];
+                }
+
+                $langPhp = '<?php $lang = ' . var_export( $lang, TRUE ) . ';';
+                $jsLangPhp = '<?php $lang = ' . var_export( $jsLang, TRUE ) . ';';
+
+                file_put_contents( join( \DIRECTORY_SEPARATOR, [ $devPath, 'lang.php' ] ), $langPhp );
+                file_put_contents( join( \DIRECTORY_SEPARATOR, [ $devPath, 'jslang.php' ] ), $jsLangPhp );
+            } );
+        }
+
+        /**
+         * REBUILD TEMPLATE FILES
+         */
+        if ( $fs->exists( $themeXmlPath = join( \DIRECTORY_SEPARATOR, [$appPath, 'data', 'theme.xml'] ) ) )
+        {
+            $this->task( 'Rebuilding template files', function () use ( $appPath, $devPath, $themeXmlPath, $fs ) {
+                $service = new \Sabre\Xml\Service();
+                $service = $service->parse( file_get_contents( $themeXmlPath ) );
+
+                foreach ( $service as $xml )
+                {
+                    // Templates
+                    if ( $xml['name'] === '{}template' )
+                    {
+                        $phtml = sprintf( '<ips:template parameters="%s" />', $xml['attributes']['template_data'] ) . "\n";
+                        $phtml .= $xml['value'];
+
+                        $dirPath = join( \DIRECTORY_SEPARATOR, [
+                            $devPath,
+                            'html',
+                            $xml['attributes']['template_location'],
+                            $xml['attributes']['template_group'],
+                        ] );
+                        $filePath = join( \DIRECTORY_SEPARATOR, [
+                            $dirPath,
+                            $xml['attributes']['template_name'] . '.phtml'
+                        ] );
+
+                        @mkdir( $dirPath, 0777, TRUE );
+                        file_put_contents( $filePath, $phtml );
+
+                        continue;
+                    }
+
+                    // CSS
+                    if ( $xml['name'] === '{}css' )
+                    {
+                        $dirPath = join( \DIRECTORY_SEPARATOR, [
+                            $devPath,
+                            'css',
+                            $xml['attributes']['css_location'],
+                        ] );
+
+                        if ( $xml['attributes']['css_path'] !== '.' )
+                        {
+                            $dirPath = join( \DIRECTORY_SEPARATOR, [
+                                $dirPath,
+                                $xml['attributes']['css_path']
+                            ] );
+                        }
+
+                        $filePath = join( \DIRECTORY_SEPARATOR, [
+                            $dirPath,
+                            $xml['attributes']['css_name']
+                        ] );
+
+                        @mkdir( $dirPath, 0777, TRUE );
+                        file_put_contents( $filePath, $xml['value'] );
+
+                        continue;
+                    }
+
+                    // Resources
+                    if ( $xml['name'] === '{}resource' )
+                    {
+                        $resource = base64_decode( $xml['value'] );
+
+                        $dirPath = join( \DIRECTORY_SEPARATOR, [
+                            $devPath,
+                            'resources',
+                            $xml['attributes']['location'],
+                            $xml['attributes']['path']
+                        ] );
+
+                        $filePath = join ( \DIRECTORY_SEPARATOR, [
+                            $dirPath,
+                            $xml['attributes']['name']
+                        ] );
+
+                        @mkdir( $dirPath, 077, TRUE );
+                        file_put_contents( $filePath, $resource );
+                    }
+                }
+            } );
+        }
+
+        /**
+         * REBUILD JAVASCRIPT FILES
+         */
+        if ( $fs->exists( $jsXmlPath = join( \DIRECTORY_SEPARATOR, [ $appPath, 'data', 'javascript.xml' ] ) ) )
+        {
+            $this->task( 'Rebuilding javascript files', function () use ( $appPath, $devPath, $jsXmlPath, $fs, &$lang, &$jsLang ) {
+                $service = new \Sabre\Xml\Service();
+                $service = $service->parse( file_get_contents( $jsXmlPath ) );
+
+                foreach ( $service as $xml )
+                {
+                    $dirPath = join( \DIRECTORY_SEPARATOR, [
+                        $devPath,
+                        'js',
+                        $xml['attributes']['javascript_location'],
+                        \str_replace( '/', \DIRECTORY_SEPARATOR, $xml['attributes']['javascript_path'] ),
+                    ] );
+
+                    $filePath = join( \DIRECTORY_SEPARATOR, [
+                        $dirPath,
+                        $xml['attributes']['javascript_name']
+                    ] );
+
+                    @mkdir( $dirPath, 0777, TRUE );
+                    file_put_contents( $filePath, $xml['value'] );
+                }
+            } );
+
+            /**
+             * TODO: REBUILD E-MAIL TEMPLATES
+             */
         }
     }
 
