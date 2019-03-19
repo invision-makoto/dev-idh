@@ -63,6 +63,7 @@ class Apps extends Command
             ->addItem( 'Information', [$this, 'handleResponse'], FALSE, FALSE )
             ->addItem( 'Build for release', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
             ->addItem( 'Rebuild', [$this, 'handleResponse'], FALSE, FALSE )
+            ->addItem( 'Rebuild development resources', [$this, 'rebuildDevResources'], FALSE, FALSE )
             ->addItem( 'Build new version', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
 //            ->addItem( 'Build testing environment', [$this, 'handleResponse'], $this->isInvisionApp(), $this->isInvisionApp() )
             ->addItem( $this->getToggleOption(), [$this, 'handleResponse'], $this->app->protected, $this->app->protected )
@@ -122,6 +123,12 @@ class Apps extends Command
             $this->app->build();
 
             $menu->confirm( "Build {$this->app->version} successful" )->display('Ok');
+        }
+
+        if ( $selection === 'Rebuild development resources' )
+        {
+            $menu->close();
+            $this->rebuildDevResources();
         }
 
         if ( $selection === 'Build for release' )
@@ -264,6 +271,43 @@ class Apps extends Command
             $this->task( 'Copying screenshots', function () use ( $fs, $screenshotsPath, $buildDir ) {
                 $fs->mirror( $screenshotsPath, $buildDir . \DIRECTORY_SEPARATOR . 'screenshots' );
             } );
+        }
+    }
+
+    public function rebuildDevResources( CliMenu $menu )
+    {
+        $menu->close();
+        $continue = TRUE;
+
+        $appPath = join( \DIRECTORY_SEPARATOR, [ config( 'invision.path' ), 'applications', $this->app->directory ] );
+        $devPath = join( \DIRECTORY_SEPARATOR, [ $appPath, 'dev' ] );
+        $fs = new Filesystem();
+
+        /* Don't try and use this out of laziness for IPS dev files. */
+        if ( $this->isInvisionApp() )
+        {
+            $this->error( 'Need development resources for Invision apps? Download the official ones here:' );
+            $this->error( 'https://invisioncommunity.com/files/file/7185-developer-tools/' );
+            return;
+        }
+
+        /* Warn the user if we already have development resources available */
+        if ( $fs->exists( $devPath ) )
+        {
+            $this->warn( 'WARNING: A development folder for this application already exists' );
+            $this->warn( 'If you continue, these files will be deleted and replaced with the rebuilt versions' );
+            $continue = $this->confirm( 'Are you sure you wish to continue?' );
+
+            if ( $continue )
+            {
+                $devBkpPath = join( \DIRECTORY_SEPARATOR, [ $appPath, 'dev_bkp' ] );
+                if ( !$fs->exists( $devBkpPath ) )
+                {
+                    $this->task( 'Backing up existing development resources', function () use ( $appPath, $devBkpPath, $devPath, $fs ) {
+                        $fs->mirror( $devPath, $devBkpPath );
+                    } );
+                }
+            }
         }
     }
 
