@@ -66,6 +66,14 @@ class Invision
     }
 
     /**
+     * Clear active \IPS\Helpers\Wizard sessions
+     */
+    public function clearWizardSessions(): void
+    {
+        \IPS\Db::i()->update( 'core_sys_cp_sessions', [ 'session_app_data' => '' ], [ \IPS\Db::i()->like( 'session_app_data', 'wizard-', TRUE, TRUE, TRUE ) ] );
+    }
+
+    /**
      * Load and return IPS configuration variables
      * @return array
      */

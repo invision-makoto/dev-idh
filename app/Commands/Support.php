@@ -80,6 +80,10 @@ class Support extends Command
         $this->task( 'Clearing data store', function () {
             $this->ips->clearDataStore();
         } );
+
+        $this->task( 'Clearing \IPS\Helpers\Wizard AdminCP sessions', function () {
+            $this->ips->clearWizardSessions();
+        } );
     }
 
     /**
