@@ -27,6 +27,12 @@ class Download extends Command
     protected $description = 'Download the latest release of IPS';
 
     /**
+     * Download key
+     * @var string
+     */
+    protected $downloadKey;
+
+    /**
      * IPS remote services URL
      * @var string
      */
@@ -35,8 +41,7 @@ class Download extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     * @throws \Requests_Exception
+     * @return void
      */
     public function handle()
     {
@@ -44,17 +49,38 @@ class Download extends Command
         $user    = $this->option( 'user' ) ?? env( 'IPS_USER' ) ?? $this->ask( 'What is your IPS client area username?' );
         $pass    = $this->option( 'pass' ) ?? env( 'IPS_PASS' ) ?? $this->secret( 'What is your IPS client area password?' );
 
-        // Grab our download key
-        $options = [ 'auth' => [ $user, $pass ] ];
-        $data    = [ 'files' => '', 'development' => (int)$this->option( 'development' ) ];
-        $request = Requests::request( static::$remoteServices . "/build/{$license}/", [], $data, Requests::GET, $options );
+        $this->task( 'Requesting download key', function () use ( $user, $pass, $license ) {
+            // Grab our download key
+            $options = [ 'auth' => [ $user, $pass ] ];
+            $data    = [ 'files' => '', 'development' => (int)$this->option( 'development' ) ];
+            $request = Requests::request( static::$remoteServices . "/build/{$license}/", [], $data, Requests::GET, $options );
 
-        // Bad login?
-        if ( $request->status_code === 401 )
-        {
-            $this->error( $request->body );
-            exit( 1 );
-        }
+            // Bad login?
+            if ( $request->status_code !== 200 )
+            {
+                $this->line( '' );
+                $this->error( $request->body );
+                exit( 1 );
+            }
+
+            $this->downloadKey = $request->body;
+        } );
+
+        // Now let's make the actual download request
+        $this->task( 'Executing download request', function () {
+            $request = Requests::request( static::$remoteServices . "/download/{$this->downloadKey}" );
+
+            if ( $request->status_code !== 200 )
+            {
+                $this->line( '' );
+                $this->error( $request->body );
+                exit( 1 );
+            }
+
+            \file_put_contents( 'Invision Community.zip', $request->body );
+        } );
+
+        $this->info( 'Download successful!' );
     }
 
     /**
