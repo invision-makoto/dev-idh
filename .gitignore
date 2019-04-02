@@ -3,3 +3,8 @@
 /.vscode
 /.vagrant
 /backups/database/database.sqlite
+
+# Just some generic stuff that may appear during testing
+idh
+test.html
+IPS Developer Tools.zip
