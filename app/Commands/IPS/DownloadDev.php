@@ -57,35 +57,42 @@ class DownloadDev extends Command
         $mink->setDefaultSessionName( 'community' );
         $session = $mink->getSession();
 
-        $getLoginForm = function( DocumentElement $page )
+        $this->task( 'Logging you in', function () use ( $session, $user, $pass )
         {
-            return $page->find( 'css', '#ipsLayout_contentWrapper' );
-        };
+            $getLoginForm = function( DocumentElement $page )
+            {
+                return $page->find( 'css', '#ipsLayout_contentWrapper' );
+            };
 
-        // Login
-        $session->visit( static::$loginUrl );
-        $loginForm = $getLoginForm( $session->getPage() );
-        $loginForm->find( 'css', 'input#auth' )->setValue( $user );
-        $loginForm->find( 'css', 'input#password' )->setValue( $pass );
-        $loginForm->findButton( '_processLogin' )->submit();
-
-        // Any errors?
-        if ( $session->getCurrentUrl() === static::$loginUrl )
-        {
+            // Login
+            $session->visit( static::$loginUrl );
             $loginForm = $getLoginForm( $session->getPage() );
+            $loginForm->find( 'css', 'input#auth' )->setValue( $user );
+            $loginForm->find( 'css', 'input#password' )->setValue( $pass );
+            $loginForm->findButton( '_processLogin' )->submit();
 
-            $error = $loginForm->find( 'css', '.ipsMessage_error' );
-            $error = $error->getText() ?: 'An unknown error occurred';
-            $this->error( $error );
-            exit( 1 );
-        }
+            // Any errors?
+            if ( $session->getCurrentUrl() === static::$loginUrl )
+            {
+                $loginForm = $getLoginForm( $session->getPage() );
+
+                $error = $loginForm->find( 'css', '.ipsMessage_error' );
+                $error = $error->getText() ?: 'An unknown error occurred';
+                $this->line( '' );
+                $this->error( $error );
+                exit( 1 );
+            }
+        } );
 
         // Still here? Great! Let's visit the download page
-        $session->visit( static::$devToolsUrl );
-        $downloadPage = $session->getPage();
-        $downloadPage->findLink( 'Download this file' )->click();
+        $this->task( 'Downloading latest developer resources', function () use ( $session )
+        {
+            $session->visit( static::$devToolsUrl );
+            $downloadPage = $session->getPage();
+            $downloadPage->findLink( 'Download this file' )->click();
 
-        file_put_contents( 'IPS Developer Tools.zip', $session->getPage()->getContent() );
+            file_put_contents( 'IPS Developer Tools.zip', $session->getPage()->getContent() );
+        } );
     }
 
     /**
