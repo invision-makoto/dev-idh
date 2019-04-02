@@ -2,4 +2,4 @@
 /.idea
 /.vscode
 /.vagrant
-/backups
+/backups/database/database.sqlite
