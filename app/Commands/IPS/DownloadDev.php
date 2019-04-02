@@ -93,6 +93,8 @@ class DownloadDev extends Command
 
             file_put_contents( 'IPS Developer Tools.zip', $session->getPage()->getContent() );
         } );
+
+        $this->info( 'Download successful!' );
     }
 
     /**
