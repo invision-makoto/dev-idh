@@ -51,7 +51,7 @@ class Download extends Command
 
         $this->task( 'Requesting download key', function () use ( $user, $pass, $license ) {
             // Grab our download key
-            $options = [ 'auth' => [ $user, $pass ] ];
+            $options = [ 'auth' => [ $user, $pass ], 'verify' => TRUE ];
             $data    = [ 'files' => '', 'development' => (int)$this->option( 'development' ) ];
             $request = Requests::request( static::$remoteServices . "/build/{$license}/", [], $data, Requests::GET, $options );
 
@@ -68,7 +68,7 @@ class Download extends Command
 
         // Now let's make the actual download request
         $this->task( 'Executing download request', function () {
-            $request = Requests::request( static::$remoteServices . "/download/{$this->downloadKey}" );
+            $request = Requests::request( static::$remoteServices . "/download/{$this->downloadKey}", [], [], Requests::GET, [ 'verify' => true ] );
 
             if ( $request->status_code !== 200 )
             {
