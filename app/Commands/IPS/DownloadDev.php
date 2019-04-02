@@ -36,6 +36,12 @@ class DownloadDev extends Command
     protected static $loginUrl = 'https://invisioncommunity.com/login/';
 
     /**
+     * Developer Tools URL
+     * @var string
+     */
+    protected static $devToolsUrl = 'https://invisioncommunity.com/files/file/7185-developer-tools/';
+
+    /**
      * Execute the console command.
      *
      * @return mixed
@@ -71,12 +77,15 @@ class DownloadDev extends Command
             $error = $loginForm->find( 'css', '.ipsMessage_error' );
             $error = $error->getText() ?: 'An unknown error occurred';
             $this->error( $error );
-            return;
+            exit( 1 );
         }
 
-        file_put_contents( 'test.html', $session->getPage()->getContent() );
+        // Still here? Great! Let's visit the download page
+        $session->visit( static::$devToolsUrl );
+        $downloadPage = $session->getPage();
+        $downloadPage->findLink( 'Download this file' )->click();
 
-
+        file_put_contents( 'IPS Developer Tools.zip', $session->getPage()->getContent() );
     }
 
     /**
