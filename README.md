@@ -69,4 +69,4 @@ There are various additional features planned for this application, but I do not
 Some of these features include:
 * Acceptance test helpers
 * Class generators
-* Setting page generators
+* Setting page generators.
