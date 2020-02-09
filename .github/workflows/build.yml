@@ -20,4 +20,4 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Build CLI script
-      run: php invision\ dev\ helper app:build
+      run: sudo php invision\ dev\ helper app:build
