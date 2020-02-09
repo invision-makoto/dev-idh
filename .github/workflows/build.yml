@@ -17,4 +17,4 @@ jobs:
       run: php7.2 /usr/bin/composer install --prefer-dist --no-progress --no-suggest
 
     - name: Build CLI script
-      run: sudo php7.2 invision\ dev\ helper app:build -vvv
+      run: sudo php7.2 -v; sudo php7.2 invision\ dev\ helper app:build -vvv
