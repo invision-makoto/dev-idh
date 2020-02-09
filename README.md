@@ -1,5 +1,7 @@
 # Invision Development Helper (IDH)
 
+![GitHub](https://img.shields.io/github/license/fujimakoto/ips-dev-helper) ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/fujimakoto/ips-dev-helper?label=release) ![GitHub issues](https://img.shields.io/github/issues-raw/fujimakoto/ips-dev-helper) ![GitHub last commit](https://img.shields.io/github/last-commit/fujimakoto/ips-dev-helper)
+
 Invision Development Helper is a command line utility designed to aid third-party IPS developers in their everyday workflow.
 
 It is a direct continuation of the previous Power Tools command line script, and is still in its early alpha stages with limited functionality.
