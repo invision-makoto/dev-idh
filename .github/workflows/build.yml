@@ -12,12 +12,9 @@ jobs:
 
     - name: Validate composer.json and composer.lock
       run: composer validate
-      
-    - name: Install PHP dependencies
-      run: sudo apt install php7.2-cli php7.2-zip php7.2-readline php7.2-xmlreader php7.2-xsl php7.2-mysqli php7.2-json php7.2-pdo php7.2-curl php7.2-ftp php7.2-mbstring
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Build CLI script
-      run: sudo php7.2 invision\ dev\ helper app:build -vvv
+      run: sudo php7.4 invision\ dev\ helper app:build -vvv
