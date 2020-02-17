@@ -1,0 +1,21 @@
+name: IDH Tests
+
+on: [push]
+
+jobs:
+  idh-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+    - name: Display help screen
+      run: php invision\ dev"
+    - name: Download latest IPS build
+      run: php invision\ dev ips:download --license="${{ secrets.LICENSE }}" --user="${{ secrets.USER }}" --pass="${{ secrets.PASS }}"
+    - name: Check download
+      run: '(test -f "Invision Community.zip" && echo Download successful) || echo "Download failed. Aborting test."; exit'
+    - name: Download latest IPS development resources
+      run: php invision\ dev ips:download --user="${{ secrets.USER }}" --pass="${{ secrets.PASS }}"
+    - name: Check dev download
+      run: '(test -f "IPS Developer Tools.zip" && echo Download successful) || echo "Download failed. Aborting test."; exit'
