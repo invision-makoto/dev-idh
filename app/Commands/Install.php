@@ -24,7 +24,10 @@ class Install extends Command
                             {--db-host=127.0.0.1 : Database hostname (optional)}
                             {--db-port=3306 : Database hostname (optional)}
                             {--db-name=ips4_dev : Database name (optional)}
-                            {--path= : Path to the IPS installation if not installing from the current path (optional)}';
+                            {--path= : Path to the IPS installation if not installing from the current path (optional)}
+                            {--test-mode : Configures the server for acceptance testing compatibility (optional)}
+                            {--dev-mode : Configures the server for in development mode (optional)}
+                            {--friendly-urls : Enable and configure friendly URL\'s immediately after installation (optional)}';
 
     /**
      * The description of the command.
@@ -158,6 +161,44 @@ class Install extends Command
         $confGlobal['installed'] = TRUE;
         $confGlobal['board_start'] = time();
         \file_put_contents( $this->path( $path, 'conf_global.php' ), "<?php\n\n" . '$INFO = ' . var_export( $confGlobal, TRUE ) . ';' );
+
+        // Enable friendly URL's?
+        if ( $this->option('friendly-urls') )
+        {
+            \IPS\Db::i()->update( 'core_sys_conf_settings', [ 'conf_value' => 1 ], [ 'conf_key=?', 'htaccess_mod_rewrite' ] );
+            \file_put_contents( $this->path( $path, '.htaccess' ), "<IfModule mod_rewrite.c>
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule \.(js|css|jpeg|jpg|gif|png|ico|map)(\?|$) /404error.php [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+" );
+        }
+
+        if ( $this->option('test-mode') )
+        {
+            // Database storage is needed when running acceptance tests
+            \file_put_contents( $this->path( $path, 'constants.php' ), "<?php
+
+\define( 'REDIS_ENABLED', false );
+\define( 'STORE_METHOD', 'Database' );
+\define( 'STORE_CONFIG', '[]' );
+\define( 'CACHE_METHOD', 'None' );
+\define( 'CACHE_CONFIG', '[]' );
+\define( 'CACHE_PAGE_TIMEOUT', 0 );
+\define( 'SUITE_UNIQUE_KEY', '88e527d286' );
+
+" );
+
+            // We also need to disable recaptcha
+            \IPS\Db::i()->update( 'core_sys_conf_settings', [ 'conf_value' => 'none' ], [ 'conf_key=?', 'bot_antispam_type' ] );
+        }
+
 
         // Finalize some things
         \IPS\Db::i()->update( 'core_sys_conf_settings', [ 'conf_value' => $this->argument('license') ], [ 'conf_key=?', 'ipb_reg_number' ] );
