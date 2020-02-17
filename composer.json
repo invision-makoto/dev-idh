@@ -28,7 +28,8 @@
         "rmccue/requests": "^1.7",
         "sabre/xml": "^2.1",
         "spatie/db-dumper": "^2.13",
-        "symfony/filesystem": "^4.2"
+        "symfony/filesystem": "^4.2",
+        "zendframework/zend-text": "^2.7"
     },
     "require-dev": {
         "behat/mink": "^1.7",
@@ -60,5 +61,5 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": ["invision dev helper"]
+    "bin": ["invision dev"]
 }
