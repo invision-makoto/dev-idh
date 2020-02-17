@@ -21,6 +21,7 @@
         "ext-zip": "*",
         "behat/mink-goutte-driver": "^1.2",
         "dariuszp/cli-progress-bar": "^1.0",
+        "florianv/open": "^1.0",
         "hoa/console": "^3.17",
         "laravel-zero/framework": "6.0.*",
         "psy/psysh": "@stable",

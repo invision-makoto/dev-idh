@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "689ef5673310e4acf67233da07a848fd",
+    "content-hash": "87aced7ed2f0302bccfae3b034c6af5c",
     "packages": [
         {
             "name": "behat/mink",
@@ -485,6 +485,54 @@
                 "whoops"
             ],
             "time": "2020-01-15T10:00:00+00:00"
+        },
+        {
+            "name": "florianv/open",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/florianv/open.git",
+                "reference": "e945308dbc49408e8407ab0526f466291df783ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/florianv/open/zipball/e945308dbc49408e8407ab0526f466291df783ba",
+                "reference": "e945308dbc49408e8407ab0526f466291df783ba",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/console": "~2.3|~3.0|~4.0",
+                "symfony/process": "~2.3|~3.0|~4.0"
+            },
+            "bin": [
+                "bin/open"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Open\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florian Voutzinos",
+                    "email": "florian@voutzinos.com",
+                    "homepage": "http://florian.voutzinos.com"
+                }
+            ],
+            "description": "Opens a file or URL in PHP",
+            "homepage": "https://github.com/florianv/open",
+            "keywords": [
+                "browser",
+                "file",
+                "open",
+                "url"
+            ],
+            "time": "2018-03-23T13:08:04+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
