@@ -16,7 +16,6 @@ Otherwise, just extract the included **idh** file to the directory of your IPS i
 If the script is not being run while you are currently in your IPS installation root, you must set the path to your IPS installation in the ```IDH_PATH``` environment variable.
 
 ## Features
-As noted above, this is an early alpha project and has limited functionality.
 
 ### Interactive console
 ![](https://i.imgur.com/TzhVVOc.gif)
