@@ -26,7 +26,6 @@ class Install extends Command
                             {--db-name=ips4_dev : Database name (optional)}
                             {--path= : Path to the IPS installation if not installing from the current path (optional)}
                             {--test-mode : Configures the server for acceptance testing compatibility (optional)}
-                            {--dev-mode : Configures the server for in development mode (optional)}
                             {--friendly-urls : Enable and configure friendly URL\'s immediately after installation (optional)}';
 
     /**
