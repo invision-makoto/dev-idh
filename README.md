@@ -4,8 +4,6 @@
 
 Invision Development Helper is a command line utility designed to aid third-party IPS developers in their everyday workflow.
 
-It is a direct continuation of the previous Power Tools command line script, and is still in its early alpha stages with limited functionality.
-
 **IMPORTANT: THIS TOOL IS FOR USE ON LOCAL DEVELOPMENT ENVIRONMENTS ONLY. UNDER NO CIRCUMSTANCE SHOULD ANY OF THE PROVIDED TOOLS BE USED ON A PRODUCTION SERVER.**
 
 ## Installation
