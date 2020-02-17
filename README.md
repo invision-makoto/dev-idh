@@ -25,10 +25,19 @@ As noted above, this is an early alpha project and has limited functionality.
 
 IDH integrates IPS with [PsySh](https://psysh.org) via the console command, allowing you to quickly test and run IPS code directly from the command line.
 
+### Command line IPS installation
+IDH includes support for downloading the latest IPS release and IPS development resources straight from the command-line.
+
+This hooks into the same API that IPS uses when processing updates within your community. Meaning, obviously, you still need to provide a license key, username and password for it to work. This will then download the latest build available straight from IPS.
+
+In addition to this, IDH now allows you to perform a complete installation of IPS from the CLI as well. This is built not only to make setting up local test and development environments easier, but to facilitate automated testing and pave the way for GitHub CI support in the future.
+
+![](https://i.imgur.com/Zxq8yAp.png)
+
 ### Application management
 IDH includes a dedicated CUI allowing you to manage various aspects of your application from the commandline.
 
-![](https://i.imgur.com/nOIvF9b.png)
+![](https://i.imgur.com/v03uoSi.png)
 
 From here, you can
 * View application information
@@ -37,7 +46,7 @@ From here, you can
 * Build a new application version
 * Enable/disable problem applications remotely
 
-![](https://i.imgur.com/w9nmxjV.png)
+![](https://i.imgur.com/O5BlFfu.png)
 
 #### Build for release
 The "build for release" function does all of the following things for you at once:
@@ -50,25 +59,19 @@ The "build for release" function does all of the following things for you at onc
 
 This way, everything is bundled up and ready to be directly uploaded to the marketplace. No having to manually copy or move things around, everything is sorted and compiled for you in an instant.
 
+![](https://i.imgur.com/RodwgXt.png)
+
 ### Proxy classes
 
 Just as the old Power Tools application did, IDH provides the ability to generate "proxy" classes used to help your IDE properly resolve IPS' monkey-patched classes.
 
 Even better, it can parse database schema files and automatically assign them as properties to their associated classes!
 
+![](https://i.imgur.com/ISL2XTr.png)
+
 ### Support
 * Clear IPS cache and data store remotely
 * Remotely backup/dump your development servers database
 * Run MD5 checks to find modified core files
 
-![](https://i.imgur.com/O33nI8S.png)
-
-
-## Future features
-
-There are various additional features planned for this application, but I do not have any timelines or guarantees on when they will be implemented.
-
-Some of these features include:
-* Acceptance test helpers
-* Class generators
-* Setting page generators.
+![](https://i.imgur.com/bcZFNQk.png)
