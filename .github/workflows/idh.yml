@@ -10,7 +10,7 @@ jobs:
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Display help screen
-      run: php invision\ dev"
+      run: php invision\ dev
     - name: Download latest IPS build
       run: php invision\ dev ips:download --license="${{ secrets.LICENSE }}" --user="${{ secrets.USER }}" --pass="${{ secrets.PASS }}"
     - name: Check download
