@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Commands;
+namespace App\Commands\IPS;
 
 use App\Invision\Invision;
 use Illuminate\Console\Scheduling\Schedule;
