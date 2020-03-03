@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Commands;
+namespace App\Commands\Apps;
 
 use App\Invision\Invision;
 use Illuminate\Console\Scheduling\Schedule;
@@ -44,7 +44,7 @@ class Apps extends Command
      * Valid files to include in the documentation archive
      * @var array
      */
-    protected static $docFiles = [ 'README.md', 'README.txt', 'README.htm', 'README.html', 'LICENSE', 'LICENSE.txt' ];
+    public static $docFiles = [ 'README.md', 'README.txt', 'README.htm', 'README.html', 'LICENSE', 'LICENSE.txt' ];
 
     /**
      * Execute the console command.
@@ -129,7 +129,7 @@ class Apps extends Command
         if ( $selection === 'Rebuild development resources' )
         {
             $menu->close();
-            $this->rebuildDevResources();
+            $this->rebuildDevResources( $menu );
         }
 
         if ( $selection === 'Build for release' )
@@ -260,7 +260,7 @@ class Apps extends Command
         // Now bundle up our development resources
         $this->task( 'Compiling development resources', function () use ( $buildDir, $appPath ) {
             $devPath = $buildDir . \DIRECTORY_SEPARATOR . 'Development Resources.zip';
-            $this->recursiveZip( $appPath . \DIRECTORY_SEPARATOR . 'dev', $devPath );
+            static::recursiveZip( $appPath . \DIRECTORY_SEPARATOR . 'dev', $devPath );
         } );
 
         // Copy screenshots, if we have them
@@ -519,7 +519,7 @@ class Apps extends Command
      * @param $destination
      * @return bool
      */
-    protected function recursiveZip( $source, $destination )
+    public static function recursiveZip( $source, $destination )
     {
         $zip = new \ZipArchive();
         $zip->open( $destination, \ZipArchive::CREATE | \ZipArchive::OVERWRITE );

@@ -1,5 +1,7 @@
 <?php
 
+$__path = env( 'IPS_PATH', './' );
+
 return [
 
     /*
@@ -12,7 +14,7 @@ return [
     |
     */
 
-    'path' => env( 'IDH_PATH', './' ),
+    'path' => $__path,
 
     /*
     |--------------------------------------------------------------------------
@@ -23,7 +25,7 @@ return [
     | are stored in.
     |
     */
-    'builds_path' => env( 'IDH_BUILDS_PATH', './builds/' ),
+    'builds_path' => env( 'IPS_BUILDS_PATH', \join( \DIRECTORY_SEPARATOR, [ $__path, 'builds' ] ) ),
 
     /*
     |--------------------------------------------------------------------------
@@ -34,6 +36,6 @@ return [
     | are stored in.
     |
     */
-    'backups_path' => env( 'IDH_BACKUPS_PATH', './backups/' )
+    'backups_path' => env( 'IPS_BACKUPS_PATH', \join( \DIRECTORY_SEPARATOR, [ $__path, 'backups' ] ) )
 
 ];
