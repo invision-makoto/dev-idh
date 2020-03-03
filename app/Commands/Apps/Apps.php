@@ -129,7 +129,7 @@ class Apps extends Command
         if ( $selection === 'Rebuild development resources' )
         {
             $menu->close();
-            $this->rebuildDevResources();
+            $this->rebuildDevResources( $menu );
         }
 
         if ( $selection === 'Build for release' )
