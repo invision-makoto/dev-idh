@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'path' => env( 'IDH_PATH', './' ),
+    'path' => env( 'IPS_PATH', './' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -23,7 +23,7 @@ return [
     | are stored in.
     |
     */
-    'builds_path' => env( 'IDH_BUILDS_PATH', './builds/' ),
+    'builds_path' => env( 'IPS_BUILDS_PATH', './builds/' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -34,6 +34,6 @@ return [
     | are stored in.
     |
     */
-    'backups_path' => env( 'IDH_BACKUPS_PATH', './backups/' )
+    'backups_path' => env( 'IPS_BACKUPS_PATH', './backups/' )
 
 ];
