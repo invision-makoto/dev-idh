@@ -21,6 +21,18 @@ class Invision
         $this->path = $path;
         putenv( 'IDH_COMMAND=ENABLED' );
         require_once $this->path . '/' . 'init.php';
+
+        if ( \file_exists( $this->path . '/' . 'conf_global.php' ) )
+        {
+            if ( getenv( 'IDH_MEMBER_ID' ) !== FALSE )
+            {
+                \IPS\Member::$loggedInMember = \IPS\Member::load( (int) getenv( 'IDH_MEMBER_ID' ) );
+            }
+            else
+            {
+                \IPS\Member::$loggedInMember = \IPS\Member::load( 1 );
+            }
+        }
     }
 
     /**

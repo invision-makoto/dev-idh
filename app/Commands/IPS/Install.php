@@ -210,6 +210,10 @@ RewriteRule . /index.php [L]
         }
         \IPS\Output::clearJsFiles();
 
+        \IPS\Member::$loggedInMember = \IPS\Member::load(1);
+
+        // IPS 4.5: We need to hack in our language ID post-installation, since we're running a continuous script
+        \IPS\Member::loggedIn()->language()->id = 1;
         \IPS\core\FrontNavigation::i()->buildDefaultFrontNavigation();
 
         unset( \IPS\Data\Store::i()->settings );

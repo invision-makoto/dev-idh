@@ -15,7 +15,7 @@ class Console extends Command
      *
      * @var string
      */
-    protected $signature = 'console 
+    protected $signature = 'console
                             {--member=1 : ID of the member that \IPS\Member::loggedIn() should return (optional)}
                             {--guest : Shorthand for --member=0 (optional)}';
 
@@ -33,10 +33,7 @@ class Console extends Command
      */
     public function handle()
     {
-        $ips = app( Invision::class );
-
         $opts = $this->options();
-
         if ( $opts['guest'] )
         {
             putenv( 'IDH_MEMBER_ID=0' );
@@ -45,6 +42,8 @@ class Console extends Command
         {
             putenv( "IDH_MEMBER_ID={$opts['member']}" );
         }
+
+        $ips = app( Invision::class );
 
         $config = new Configuration( [ 'startupMessage' => 'Welcome to the IDH console! Need assistance? Run "help"' ] );
         $shell  = new Shell( $config );
