@@ -219,6 +219,8 @@ class Apps extends Command
 
         \IPS\Data\Store::i()->clearAll();
         \IPS\Data\Cache::i()->clearAll();
+        \IPS\Theme::deleteCompiledTemplate();
+        \IPS\Theme::resetAllCacheKeys();
     }
 
     /**
