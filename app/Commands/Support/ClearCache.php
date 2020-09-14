@@ -13,7 +13,7 @@ class ClearCache extends Command
      *
      * @var string
      */
-    protected $signature = 'support:cache';
+    protected $signature = 'support:recache';
 
     /**
      * The description of the command.
