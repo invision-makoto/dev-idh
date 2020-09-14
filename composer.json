@@ -19,16 +19,17 @@
         "php": ">=7.2 <7.5",
         "ext-json": "*",
         "ext-zip": "*",
-        "laravel-zero/framework": "^8.0",
+        "behat/mink-goutte-driver": "^1.2",
         "illuminate/console": "^8.0",
+        "laminas/laminas-text": "^2.7",
+        "laravel-zero/framework": "^8.0",
         "nunomaduro/laravel-console-menu": "^3.1",
         "psy/psysh": "@stable",
         "rmccue/requests": "^1.7",
         "sabre/xml": "^2.1",
         "spatie/db-dumper": "^2.13",
-        "symfony/filesystem": "^5.0",
         "symfony/console": "^5.1",
-        "behat/mink-goutte-driver": "^1.2"
+        "symfony/filesystem": "^5.0"
     },
     "require-dev": {
         "behat/mink": "^1.7",
