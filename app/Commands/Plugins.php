@@ -45,6 +45,11 @@ class Plugins extends Command
         }
 
         $option = $this->menu( 'Plugins', array_keys( $plugins ) )->open();
+        if ( !$option )
+        {
+            return;
+        }
+
         $this->plugin = array_values( $plugins )[ $option ]; // This is kind of dumb, I know.
 
         $this->menu( $this->plugin->name )
