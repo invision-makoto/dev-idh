@@ -41,7 +41,11 @@ class ClearCache extends Command
         } );
 
         $this->task( 'Clearing compiled CSS files', function () {
-            $this->ips->clearJsFiles();
+            $this->ips->clearCompiledCss();
+        } );
+
+        $this->task( 'Clearing compiled templates', function () {
+            $this->ips->clearCompiledTemplates();
         } );
 
         $this->task( 'Clearing cache files', function () {

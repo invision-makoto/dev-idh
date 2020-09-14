@@ -78,6 +78,15 @@ class Invision
     }
 
     /**
+     * Clear compiled CSS files
+     */
+    public function clearCompiledTemplates(): void
+    {
+        \IPS\Theme::deleteCompiledTemplate();
+        \IPS\Theme::resetAllCacheKeys();
+    }
+
+    /**
      * Clear active \IPS\Helpers\Wizard sessions
      */
     public function clearWizardSessions(): void
