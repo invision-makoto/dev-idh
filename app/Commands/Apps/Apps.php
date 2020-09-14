@@ -47,6 +47,12 @@ class Apps extends Command
     public static $docFiles = [ 'README.md', 'README.txt', 'README.htm', 'README.html', 'LICENSE', 'LICENSE.txt' ];
 
     /**
+     * An array of official IPS applications
+     * @var array
+     */
+    public static $ipsApps = ['core', 'forums', 'blog', 'nexus', 'calendar', 'cms', 'downloads', 'gallery'];
+
+    /**
      * Execute the console command.
      *
      * @return mixed
@@ -57,8 +63,47 @@ class Apps extends Command
         /** @var \App\Invision\Invision $ips */
         $ips = app( Invision::class );
 
-        $option = $this->menu( 'Applications', array_keys( \IPS\Application::applications() ) )->open();
-        $this->app = array_values( \IPS\Application::applications() )[ $option ];
+        $menu = $this->menu( 'Applications' );
+        $thirdPartyApps = [];
+        $ipsApps = [];
+        foreach ( \IPS\Application::applications() as $key => $application )
+        {
+            if ( \in_array( $key, static::$ipsApps ) )
+            {
+                $ipsApps[] = $key;
+                continue;
+            }
+
+            $thirdPartyApps[] = $key;
+        }
+
+        // Display third-party apps first
+        if ( $thirdPartyApps )
+        {
+            $menu->addLineBreak()
+                ->addStaticItem('Third-party applications')
+                ->addStaticItem('---------');
+
+            foreach ( $thirdPartyApps as $thirdPartyApp )
+            {
+                $menu->addOption( $thirdPartyApp, $thirdPartyApp );
+            }
+        }
+
+        // Lastly, display any core/IPS applications
+        $menu->addLineBreak()
+             ->addStaticItem('IPS applications')
+             ->addStaticItem('---------');
+
+        foreach ( $ipsApps as $ipsApp )
+        {
+            $menu->addOption( $ipsApp, $ipsApp );
+        }
+
+        // Open the menu and prompt for a choice
+        $menu->addLineBreak();
+        $option = $menu->open();
+        $this->app = \IPS\Application::applications()[ $option ];
 
         $this->menu( $this->appName = $ips->lang( '__app_' . $this->app->directory ) )
             ->addItem( 'Information', [$this, 'handleResponse'], FALSE, FALSE )
@@ -115,7 +160,7 @@ class Apps extends Command
 
         if ( $selection === 'Build new version' )
         {
-            list( $human, $long ) = $this->getNewVersion();
+            [ $human, $long ] = $this->getNewVersion();
 
             $human = $menu->askText()->setPromptText( 'Human version' )->setPlaceholderText( $human )->ask();
             $long  = $menu->askText()->setPromptText( 'Long version' )->setPlaceholderText( $long )->ask();
