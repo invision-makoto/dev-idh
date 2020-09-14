@@ -103,6 +103,11 @@ class Apps extends Command
         // Open the menu and prompt for a choice
         $menu->addLineBreak();
         $option = $menu->open();
+        if ( !$option )
+        {
+            return;
+        }
+
         $this->app = \IPS\Application::applications()[ $option ];
 
         $this->menu( $this->appName = $ips->lang( '__app_' . $this->app->directory ) )
