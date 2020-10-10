@@ -3,6 +3,7 @@
 /.vscode
 /.vagrant
 /backups/database/database.sqlite
+/storage/logs/*.log
 
 # Just some generic stuff that may appear during testing
 idh

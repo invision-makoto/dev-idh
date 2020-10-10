@@ -194,8 +194,9 @@ RewriteRule . /index.php [L]
 
 " );
 
-            // We also need to disable recaptcha
-            \IPS\Db::i()->update( 'core_sys_conf_settings', [ 'conf_value' => 'none' ], [ 'conf_key=?', 'bot_antispam_type' ] );
+            // We also need to disable recaptcha and e-mail verification
+            \IPS\Db::i()->update('core_sys_conf_settings', ['conf_value' => 'none'], ['conf_key=?', 'bot_antispam_type']);
+            \IPS\Db::i()->update('core_sys_conf_settings', ['conf_value' => 'none'], ['conf_key=?', 'reg_auth_type']);
         }
 
 

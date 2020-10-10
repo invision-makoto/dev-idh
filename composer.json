@@ -20,6 +20,7 @@
         "ext-json": "*",
         "ext-zip": "*",
         "behat/mink-goutte-driver": "^1.2",
+        "dariuszp/cli-progress-bar": "^1.0",
         "illuminate/console": "^8.0",
         "laminas/laminas-text": "^2.7",
         "laravel-zero/framework": "^8.0",
